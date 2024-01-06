@@ -7,9 +7,36 @@
 %token <bool> Lbool
 %token <string> Lstring
 %token <string> Lident
+%token <Ast.type_t> Ltype
+%token Lvar 
+
+
+(*Operators*)
+%token Ladd Lsub Lmul Ldiv Lmod Lassign Lif Lelse Lwhile
+%token Lgt Lgte Llt Llte Leq Lneq Land Lor 
+
+(*Punctuations*)
+%token Lsc Lopar Lcpar Lobra Lcbra
+
+(*Keywords*)
+%token Lreturn Lend Lprint_int Lprint_str Lprint_bool Lprint_nl
+
+(*Values*)
+// %token <int> Lint
+// %token <bool> Lbool
+// %token <string> Lvar
+// %token <string> Lstring
 // %token <Ast.type_t> Ltype
-%token Lend Lsc Lvar Leq
-%token Lassign Lreturn
+
+
+%left Lor
+%left Land
+
+
+%left Leq Lneq Llt Lgt Llte Lgte
+
+%left Ladd Lsub Lmod Lmul Ldiv
+
 
 %start prog
 

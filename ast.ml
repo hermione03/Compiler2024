@@ -1,28 +1,3 @@
-(* module Syntax = struct
-  type expr =
-    | Void of { pos: Lexing.position }
-    | Int of { value: int
-            ; pos: Lexing.position }
-    | Bool of { value: bool
-            ; pos: Lexing.position }
-    | String of { value: string
-            ; pos: Lexing.position}
-end
-
-module IR = struct
-  type expr =
-    | Void
-    | Int of int
-    | Bool of bool
-    | String of string
-end *)
-
-
-
-
-
-
-
 (* module type Parameters = sig
   type value
 end *)

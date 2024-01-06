@@ -1,0 +1,11 @@
+type token =
+    Lstring of string
+  | Lint of int
+  | Lend
+  | Lbool of bool
+  | LData of string
+val menhir_begin_marker : int
+val xv_value : Ast.Syntax.value
+val xv_prog : Ast.Syntax.expr
+val xv_expr : Ast.Syntax.expr
+val menhir_end_marker : int

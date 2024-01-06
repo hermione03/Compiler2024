@@ -93,5 +93,5 @@ let rec analyze_block block env =
 
 
 let analyze parsed =
-  analyze_block parsed Baselib._types_ 
-
+  analyze_expr parsed Baselib._types_ 
+  (* analyze_block parsed Baselib._types_  *)

@@ -19,7 +19,6 @@ let compile_value v =
   | Void    -> [ Li (V0, 0) ]
   | Bool b -> [ Li (V0, if b then 1 else 0) ]
   | Int n  -> [ Li (V0, n) ]
-  | Str s -> [ La (V0, Lbl s) ]
   (* | Data d -> [ La (V0, Lbl d) ] *)
 
 let rec compile_expr e env =
@@ -94,7 +93,7 @@ and compile_block b info env =
   | i :: r ->
     compile_block r (compile_instr i info env) env
 
-let compile_def (Func (name, args, b)) counter env =
+(* let compile_def (Func (name, args, b)) counter env =
   let cb = compile_block b
       { asm = []
       ; env =  List.fold_left
@@ -123,12 +122,12 @@ match p with
 | [] -> []
 | d :: r ->
   let new_counter, cd = compile_def d counter in
-  cd @ (compile_prog r new_counter)
+  cd @ (compile_prog r new_counter) *)
 
 (* let compile (code, data) =
   { text = Baselib.builtins @ compile_prog code 0
   ; data = List.map (fun (l, s) -> (l, Asciiz s)) data } *)
 
-let compile ir =
-  { text = Baselib.builtins @ compile_expr ir
+let compile ir env=
+  { text = Baselib.builtins @ compile_expr ir env
   ; data = [] }

@@ -19,8 +19,8 @@ let () =
   try
     let parsed = Parser.prog Lexer.token buf in
     close_in f ;
-    let ast = Semantics.analyze parsed in
-    let asm = Compiler.compile ast in
+    let ast , env = Semantics.analyze parsed in
+    let asm = Compiler.compile ast Env.empty  in
     Mips.emit Stdlib.stdout asm
   with
   | Lexer.Error c ->

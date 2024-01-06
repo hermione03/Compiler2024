@@ -7,13 +7,13 @@
 %token <bool> Lbool
 %token <string> Lstring
 %token <string> Lident
-%token <Ast.type_t> Ltype
+// %token <Ast.type_t> Ltype
 %token Lend Lsc Lvar Leq
 %token Lassign Lreturn
 
 %start prog
 
-%type <Ast.Syntax.block> prog
+%type <Ast.Syntax.expr> prog
 
 %%
 
@@ -23,9 +23,12 @@ block:
 ;
 
 prog:
-	| i = instr ; Lsc ; b = prog { i @ b }
-	| i = instr ; Lsc ; Lend { i }
+	| e = expr; Lend { e }
 ;
+// prog:
+// 	| i = instr ; Lsc ; b = prog { i @ b }
+// 	| i = instr ; Lsc ; Lend { i }
+// ;
 
 // instr:
 //   | Lvar; id = Lident 
@@ -78,8 +81,7 @@ instr:
 
 expr:
 | v = value{
-    Value { value= v ; pos= $startpos(v) }
-}
+    Value { value= v ; pos= $startpos(v) }}
 ;
 
 (*Values*)

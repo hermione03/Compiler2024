@@ -1,4 +1,5 @@
-
+_build/
+.vscode/
 main.byte
 .vscode/settings.json
 _build/_digests

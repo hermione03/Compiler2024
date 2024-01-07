@@ -20,7 +20,8 @@ let () =
     let parsed = Parser.prog Lexer.token buf in
     close_in f ;
     let ast , env = Semantics.analyze parsed in
-    let asm = Compiler.compile ast Env.empty  in
+    let simplified = Simplifier.simplify ast in
+    let asm = Compiler.compile simplified env  in
     Mips.emit Stdlib.stdout asm
   with
   | Lexer.Error c ->

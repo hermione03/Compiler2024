@@ -36,13 +36,19 @@ type instr =
   | Sub   of reg * reg * reg
   | Mul   of reg * reg * reg
   | Div   of reg * reg * reg
+  | Rem of reg * reg * reg  
 
   | And  of reg * reg * reg
   | Andi  of reg * reg * int
   | Xor   of reg * reg * reg
   | Or   of reg * reg * reg
 
-  | Syscall
+  | Seq   of reg * reg * reg
+  | Sne   of reg * reg * reg
+  | Slt   of reg * reg * reg
+  | Sgt   of reg * reg * reg
+  | Sle   of reg * reg * reg
+  | Sge   of reg * reg * reg
   | B     of label
   | Beq   of reg * reg * label
   | Bne   of reg * reg * label
@@ -52,6 +58,7 @@ type instr =
   | Bltu  of reg * reg * label 
   | Blez  of reg * label 
   | Ble   of reg * int 
+  | Syscall
   | Jal   of label
   | Jr    of reg
 
@@ -103,16 +110,19 @@ let fmt_loc = function
   | Sll (rd, rs, i) -> ps "  sll %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
   | Srl (rd, rs, i) -> ps "  srl %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
   | Move (rd, rs)    -> ps "  move %s, %s" (fmt_reg rd) (fmt_reg rs)
+
   | Addi (rd, rs, i) -> ps "  addi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
   | Add (rd, rs, rt) -> ps "  add %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Sub (rd, rs, rt) -> ps "  sub %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Mul (rd, rs, rt) -> ps "  mul %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Div (rd, rs, rt) -> ps "  div %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  | Rem (rd, rs, rt)   -> ps "rem %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
+  
   | And (rd, rs, rt) -> ps "  and %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Andi (rd, rs, i) -> ps "  andi %s, %s, %d" (fmt_reg rd) (fmt_reg rs) i
   | Or (rd, rs, rt) -> ps "  or %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
   | Xor (rd, rs, rt) -> ps "  xor %s, %s, %s" (fmt_reg rd) (fmt_reg rs) (fmt_reg rt)
-  | Syscall          -> ps "  syscall"
+
   | B (l)            -> ps "  b %s" l
   | Beq (rs, rt, l)  -> ps "  beq %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
   | Bne (rs, rt, l)  -> ps "  bne %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
@@ -121,6 +131,14 @@ let fmt_loc = function
   | Bltu(rs, rt , l) -> ps "  blu %s, %s, %s" (fmt_reg rs) (fmt_reg rt) l
   | Blez(rs, l)      -> ps "  blez %s, %s" (fmt_reg rs) l
   | Ble(rs, i)      -> ps "  ble %s, %d" (fmt_reg rs) i
+  | Seq  (d, r1, r2) -> ps "  seq  %s, %s, %s" (fmt_reg d) (fmt_reg r1) (fmt_reg r2)
+  | Sne  (d, r1, r2) -> ps "  sne  %s, %s, %s" (fmt_reg d) (fmt_reg r1) (fmt_reg r2)
+  | Slt  (d, r1, r2) -> ps "  slt  %s, %s, %s" (fmt_reg d) (fmt_reg r1) (fmt_reg r2)
+  | Sgt  (d, r1, r2) -> ps "  sgt  %s, %s, %s" (fmt_reg d) (fmt_reg r1) (fmt_reg r2)
+  | Sle  (d, r1, r2) -> ps "  sle  %s, %s, %s" (fmt_reg d) (fmt_reg r1) (fmt_reg r2)
+  | Sge  (d, r1, r2) -> ps "  sge  %s, %s, %s" (fmt_reg d) (fmt_reg r1) (fmt_reg r2)
+
+  | Syscall          -> ps "  syscall"
   | Jal (l)          -> ps "  jal %s" l
   | Jr (r)           -> ps "  jr %s" (fmt_reg r)
 

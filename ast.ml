@@ -1,6 +1,6 @@
-(* module type Parameters = sig
+module type Parameters = sig
   type value
-end *)
+end
 
 type type_t =
   | Void_t
@@ -42,47 +42,58 @@ module Syntax = struct
   type instr =
     | Expr   of { expr: expr
                 ; pos: Lexing.position}
-    (* | Decl   of { name: ident
+    | Decl   of { name: ident
                 ; type_t: type_t
-                ; pos: Lexing.position } *)
-    | Decl of { name : string; pos : Lexing.position }
+                ; pos: Lexing.position }
+    (* | Decl of { name : string; pos : Lexing.position } *)
     | Assign of { var: ident
                 ; expr: expr
                 ; pos: Lexing.position }
     | Return of { expr: expr
                 ; pos: Lexing.position }
+    | Cond   of { test: expr
+                ; tblock: block
+                ; fblock: block
+                ; pos: Lexing.position }
   and block = instr list
+  type def =
+    | Func   of { type_t : type_t 
+                ; name: ident
+                ; args: ident list
+                ; block : block
+                ; pos: Lexing.position }
+  type prog = def list
 end
 
 
-(* module V1 = struct
+module V1 = struct
   type value =
     | Void
     | Bool of bool
     | Int  of int
     | Str  of string
-end *)
+end
 
-(*module V2 = struct
+module V2 = struct
   type value =
     | Void
     | Bool of bool
     | Int  of int
     | Data of string
-end *)
+end
 
 
   
-(* module IR (P : Parameters) = struct *)
-module IR = struct
+module IR (P : Parameters) = struct
+(* module IR = struct *)
   type ident = string
-  type value =
+  (* type value =
     | Void
     | Bool of bool
     | Int  of int
-    | Str  of string
+    | Str  of string *)
   type expr =
-    | Value of value
+    | Value of P.value
     | Var   of ident
     | Call  of ident * expr list
   (* type lvalue =
@@ -97,9 +108,10 @@ module IR = struct
     | Cond   of expr * block * block
   and block = instr list
   type def =
-    | Func of ident * ident list * block
+    (* | Func of ident * ident list * block *)
+    | Func of type_t * ident * ident list * block
   type prog = def list
 end
   
-  (* module IR1 = IR(V1)
-  module IR2 = IR(V2) *)
+module IR1 = IR(V1)
+module IR2 = IR(V2)

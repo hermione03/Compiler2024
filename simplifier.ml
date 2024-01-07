@@ -1,18 +1,18 @@
 open Ast
-open Ast.IR1
-open Ast.IR2
+(* open Ast.IR1
+open Ast.IR2 *)
 open Baselib
-(*TP6*)
+
 let collect_constant_strings code =
-  let _counter = ref 0 in
+  let counter = ref 0 in
   let ccs_value = function
-    | V1.Nil -> V2.Nil, []
+    | V1.Void -> V2.Void, []
     | V1.Bool b -> V2.Bool b, []
     | V1.Int n -> V2.Int n, []
     | V1.Str t ->
-      incr _counter;
-      let l = "str_" ^ (string_of_int !_counter) in
-      V2.Data l, [ l, t ]
+      incr counter;
+      let lbl = "str_" ^ (string_of_int !counter) in
+      V2.Data lbl, [ lbl, t ]
   in
   let rec ccs_expr = function
     | IR1.Value v ->
@@ -40,16 +40,16 @@ let collect_constant_strings code =
       let y2, ccs_y = ccs_block y in
       let n2, ccs_n = ccs_block n in
       IR2.Cond (t2, y2, n2), List.flatten [ ccs_t; ccs_y; ccs_n ]
-    | IR1.While (t, e) ->
+    (*| IR1.While (t, e) ->
       let t2, ccs_t = ccs_expr t in
       let e2, ccs_e = ccs_block e in
-      IR2.While (t2, e2), List.flatten [ ccs_t; ccs_e ]
+      IR2.While (t2, e2), List.flatten [ ccs_t; ccs_e ] *)
   and ccs_block = function
     | [] -> [], []
     | i :: r ->
       let i2, ccs_i = ccs_instr i in
       let r2, ccs_r = ccs_block r in
-      i2 :: r2, ccs_i @ ccs_r 
+      i2 :: r2, List.flatten [ ccs_i ; ccs_r ] 
   in
   let ccs_def = function
     | IR1.Func (type_t,name, args, body) ->
@@ -61,15 +61,8 @@ let collect_constant_strings code =
     | d :: r ->
       let d2, ccs_d = ccs_def d in
       let r2, ccs_r = ccs_prog r in
-      d2 :: r2,ccs_d@ccs_r
+      d2 :: r2,List.flatten [ ccs_d ; ccs_r ]
   in
-  (*let rec analyze_block parsed env =
-         match parsed with
-         |[] -> ([],[], env)
-         |e::r -> let ae,at = ccs_instr e in
-         let ae2,at2, r = analyze_block r env in 
-         (ae::ae2,at@at2, r) 
-   in analyze_block code env*)
   ccs_prog code
 ;;
 
